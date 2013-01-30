@@ -12,6 +12,7 @@ ivy*.xml
 *.ipr
 *.iws
 *.class
+*.war
 .idea
 .settings/
 .gradle/
