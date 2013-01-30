@@ -1,0 +1,5 @@
+// infrastructure project
+include "infra-config-application"
+include "infra-config-web"
+include "infra-security-operating"
+include "infra-security-product"

@@ -1,0 +1,31 @@
+// 웹서비스 공용 웹 모듈
+description = 'Platform Config Web (infra)'
+
+defaultTasks 'clean', 'build', 'uploadArchives'
+
+artifactId = 'infra-config-web'
+version = "1.0$config.subffix"
+
+dependencies {
+	
+	compile project(":infra-config-application")       
+	
+	// Rome Atom+RSS
+	// compile "net.java.dev.rome:rome:1.0.0"
+	
+	// Apache Commons
+	compile "commons-fileupload:commons-fileupload:1.2.2@jar"
+	
+	// thymeleaf
+	compile "org.thymeleaf:thymeleaf:2.0.13@jar",
+			"org.thymeleaf:thymeleaf-spring3:2.0.13@jar"
+			
+	// Servlet
+	compile "javax.servlet:javax.servlet-api:3.0.1@jar",
+			"javax.servlet:jsp-api:2.0@jar",
+			"javax.servlet:jstl:1.2@jar"
+					
+	// Test
+	testCompile "org.springframework:spring-test-mvc:$springTestMVCVersion@jar"
+	
+}

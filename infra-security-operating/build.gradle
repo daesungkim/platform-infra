@@ -1,0 +1,14 @@
+// 웹어플리케이션 운영(Admin) 서비스 인증 모듈
+description = 'Platform Security Operating (infra)'
+
+defaultTasks 'clean', 'build', 'uploadArchives'
+
+artifactId = 'infra-config-ncsecurity'
+version = "1.0$config.subffix"
+
+dependencies {
+    
+    // module
+    compile project(":infra-config-web")        
+       
+}

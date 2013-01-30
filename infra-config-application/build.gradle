@@ -1,0 +1,7 @@
+// 웹어플리케이션 공용 모듈
+description = 'linkedhole Config Application (infra)'
+
+defaultTasks 'clean', 'build', 'uploadArchives'
+
+artifactId = 'infra-config-application'
+version = "1.0$config.subffix"
