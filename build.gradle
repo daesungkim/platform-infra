@@ -192,7 +192,7 @@ subprojects {
         compile "cglib:cglib-nodep:2.2.2@jar"
         
         // lombok
-        runtime "org.projectlombok:lombok:0.11.4@jar"
+        compile "org.projectlombok:lombok:0.11.4@jar"
         
         // jasypt
         compile "org.jasypt:jasypt:1.9.0@jar",
