@@ -9,7 +9,7 @@ def loadConfiguration() {
     def verSubffix = hasProperty('release') ? '' : '-SNAPSHOT'
     setProperty 'environment', environment
     println "####### Environment is set to [$environment] #######"   
-    println "####### VerSubffix is set to [$verSubffix] #######"
+    println "####### VerSubffix is set to [$verSubffix]   #######"
     def configFile = file('environment.groovy')
     def config = new ConfigSlurper(environment).parse(configFile.toURL())
     config.subffix= verSubffix
@@ -24,20 +24,20 @@ ext {
 subprojects {
     
     apply plugin: 'java'
-    apply plugin: 'maven'
+    apply plugin: 'maven'    
     apply plugin: 'eclipse-wtp'
     
     repositories {
-		mavenCentral()
+        mavenCentral()
         maven { url 'http://repo.springsource.org/libs-milestone' }
         maven { url 'http://repo.springsource.org/plugins-release' }
         flatDir { dirs flatReposLocation }
-		// maven { url "$config.nexus.publicRepository" }
+        // maven { url "$config.nexus.publicRepository" }
     }
     
     // 저장소를 지정하고,
     uploadArchives {
-	    /**
+        /**
         repositories.mavenDeployer {
             configureAuth = {
                   authentication(userName: "$config.nexus.userName", password: "$config.nexus.password")
@@ -45,8 +45,8 @@ subprojects {
             snapshotRepository(url: "$config.nexus.snapshotRepository", configureAuth)
             repository(url: "$config.nexus.repository", configureAuth)
         }
-		**/
-		repositories {
+        **/
+        repositories {
             flatDir { dirs flatReposLocation }
        }
     }
