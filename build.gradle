@@ -14,7 +14,7 @@ def loadConfiguration() {
 }
 
 ext {
-    flatReposLocation = file('/repos').absolutePath
+    flatReposLocation = file('./repos').absolutePath
 }
 
 
@@ -51,7 +51,7 @@ subprojects {
         mavenCentral()
         maven { url 'http://repo.springsource.org/libs-milestone' }
         maven { url 'http://repo.springsource.org/plugins-release' }
-        flatDir { dirs flatReposLocation }
+        flatDir { dirs "$flatReposLocation/lib" }
         // maven { url "$config.nexus.publicRepository" }
     }
     
@@ -67,7 +67,7 @@ subprojects {
         }
         **/
         repositories {
-            flatDir { dirs flatReposLocation }
+            flatDir { dirs "$flatReposLocation/lib" }
        }
     }
   	
