@@ -5,14 +5,11 @@ defaultTasks 'clean', 'build'
 loadConfiguration()
 
 def loadConfiguration() {
-    def environment = hasProperty('env') ? env : 'dev'
-    def verSubffix = hasProperty('release') ? '' : '-SNAPSHOT'
+    def environment = hasProperty('spring.profiles.active') ? get('spring.profiles.active') : 'dev'
     setProperty 'environment', environment
     println "####### Environment is set to [$environment] #######"   
-    println "####### VerSubffix is set to [$verSubffix]   #######"
     def configFile = file('environment.groovy')
-    def config = new ConfigSlurper(environment).parse(configFile.toURL())
-    config.subffix= verSubffix
+    def config = new ConfigSlurper(environment).parse(configFile.toURL())    
     setProperty 'config', config
 }
 
@@ -23,9 +20,32 @@ ext {
 
 subprojects {
     
+    defaultTasks 'clean', 'build', 'uploadSnapshotArchives'
+    
     apply plugin: 'java'
     apply plugin: 'maven'    
     apply plugin: 'eclipse-wtp'
+    
+    group = 'com.linkedhole.platform.infra'
+    
+    // JDK 7 compatibility
+    sourceCompatibility=1.7
+    targetCompatibility=1.7
+    
+    // 정보 설정
+    ext {    
+        
+        aspectjVersion = "1.6.10"
+        slf4jVersion = "1.6.6"
+        logBackVersion = "1.0.7"
+        hibernateVersion = "4.1.7.Final"
+        
+        // When changing Spring Versions - don't forget to update bundlor ranges
+        springVersionDefault = "3.1.3.RELEASE"
+        springVersion = project.hasProperty("springVersion") ? getProperty("springVersion") : springVersionDefault
+    
+        springTestMVCVersion = "1.0.0.M1"
+    }
     
     repositories {
         mavenCentral()
@@ -51,17 +71,12 @@ subprojects {
        }
     }
   	
-  	group = 'com.linkedhole.platform.infra'
-    version = "1.0$config.subffix" 
+  	uploadArchives << {
+        println "####### uploadArchivesProject name : [$project.name], version : [$project.version]  #######"
+    }
     
-    jar {
-        manifest {
-            attributes 'Implementation-Title': 'linkedhole-platform',
-                       'Implementation-Version': version,
-                       'Built-By': System.getProperty('user.name'),
-                       'Built-Date': new Date(),
-                       'Built-JDK': System.getProperty('java.version')
-        }
+    task uploadSnapshotArchives(description: "Uploads all artifacts belonging to snapshot configuration..") {
+        dependsOn uploadArchives    
     }
         
     sourceSets.main.classesDir = new File("./build/classes")
@@ -78,31 +93,19 @@ subprojects {
         }
     }
     
-    // JDK 7 compatibility
-    sourceCompatibility=1.7
-    targetCompatibility=1.7
-    
-    // 정보 설정
-    ext {    
-        
-        aspectjVersion = "1.6.10"
-        slf4jVersion = "1.6.6"
-        logBackVersion = "1.0.7"
-        hibernateVersion = "4.1.7.Final"
-        
-        // When changing Spring Versions - don't forget to update bundlor ranges
-        springVersionDefault = "3.1.3.RELEASE"
-        springVersion = project.hasProperty("springVersion") ? getProperty("springVersion") : springVersionDefault
-    
-        springTestMVCVersion = "1.0.0.M1"
-    }
-    
     // 의존성에서 제외 모듈 등록
     configurations {
         all*.exclude group: 'commons-logging', module: 'commons-logging'
         all*.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
         all*.exclude group: 'log4j', module: 'log4j'
         all*.exclude group: 'javax.servlet', module: 'servlet-api', version: '2.+'
+        all {
+            resolutionStrategy {
+                failOnVersionConflict()                
+                cacheDynamicVersionsFor 10*60, 'seconds'
+                cacheChangingModulesFor 0, 'seconds'
+            }
+        }
     }
 
     // JAVA 컴파일시 인코딩 설정
@@ -204,5 +207,22 @@ subprojects {
                     "xmlunit:xmlunit:1.2@jar",
                     "com.jayway.jsonpath:json-path:0.8.1@jar",
                     "org.springframework:spring-test:$springVersion@jar"
+    }
+    
+    gradle.taskGraph.whenReady {taskGraph ->
+        if (taskGraph.hasTask(uploadSnapshotArchives)) {
+            version += '-SNAPSHOT'
+        } else {
+            version += ''
+        }
+        if (taskGraph.hasTask(jar)) { 
+            jar.manifest {
+                attributes 'Implementation-Title': 'platform-infra',
+                           'Implementation-Version': version,
+                           'Built-By': System.getProperty('user.name'),
+                           'Built-Date': new Date(),
+                           'Built-JDK': System.getProperty('java.version')
+            }
+        }
     }
 }

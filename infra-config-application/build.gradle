@@ -4,4 +4,4 @@ description = 'linkedhole Config Application (infra)'
 defaultTasks 'clean', 'build', 'uploadArchives'
 
 artifactId = 'infra-config-application'
-version = "1.0$config.subffix"
+version = "1.0"

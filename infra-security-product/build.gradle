@@ -4,7 +4,7 @@ description = 'Platform Security Product (infra)'
 defaultTasks 'clean', 'build', 'uploadArchives'
 
 artifactId = 'infra-security-product'
-version = "1.0$config.subffix"
+version = "1.0"
 
 dependencies {
     
