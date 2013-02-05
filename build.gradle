@@ -5,12 +5,14 @@ defaultTasks 'clean', 'build'
 loadConfiguration()
 
 def loadConfiguration() {
-    def environment = hasProperty('spring.profiles.active') ? get('spring.profiles.active') : 'dev'
-    setProperty 'environment', environment
+    ext {
+        environment = hasProperty('spring.profiles.active') ? get('spring.profiles.active') : 'dev'
+        configFile = file('environment.groovy')
+        config = new ConfigSlurper(ext.environment).parse(configFile.toURL())
+    }
+    setProperty 'environment', ext.environment
     println "####### Environment is set to [$environment] #######"   
-    def configFile = file('environment.groovy')
-    def config = new ConfigSlurper(environment).parse(configFile.toURL())    
-    setProperty 'config', config
+    setProperty 'config', ext.config
 }
 
 ext {
@@ -25,6 +27,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven'    
     apply plugin: 'eclipse-wtp'
+    apply plugin: 'idea'
     
     group = 'com.linkedhole.platform.infra'
     
@@ -34,7 +37,6 @@ subprojects {
     
     // 정보 설정
     ext {    
-        
         aspectjVersion = "1.6.10"
         slf4jVersion = "1.6.6"
         logBackVersion = "1.0.7"
@@ -79,8 +81,8 @@ subprojects {
         dependsOn uploadArchives    
     }
         
-    sourceSets.main.classesDir = new File("./build/classes")
-    sourceSets.test.classesDir = new File("./build/testClasses")
+    sourceSets.main.output.classesDir = new File("./build/classes")
+    sourceSets.test.output.classesDir = new File("./build/testClasses")
     
     eclipse {
         classpath {

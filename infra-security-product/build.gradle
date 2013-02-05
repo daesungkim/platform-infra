@@ -3,8 +3,12 @@ description = 'Platform Security Product (infra)'
 
 defaultTasks 'clean', 'build', 'uploadArchives'
 
-artifactId = 'infra-security-product'
-version = "1.0"
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.version = "1.0"
+        pom.artifactId = 'infra-security-product'
+    }
+}
 
 dependencies {
     

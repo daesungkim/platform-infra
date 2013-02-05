@@ -3,5 +3,9 @@ description = 'linkedhole Config Application (infra)'
 
 defaultTasks 'clean', 'build', 'uploadArchives'
 
-artifactId = 'infra-config-application'
-version = "1.0"
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.version = "1.0"
+        pom.artifactId = 'infra-config-application'
+    }
+}

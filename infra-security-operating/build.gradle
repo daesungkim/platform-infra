@@ -3,8 +3,12 @@ description = 'Platform Security Operating (infra)'
 
 defaultTasks 'clean', 'build', 'uploadArchives'
 
-artifactId = 'infra-config-ncsecurity'
-version = "1.0"
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.version = "1.0"
+        pom.artifactId = 'infra-config-ncsecurity'
+    }
+}
 
 dependencies {
     
